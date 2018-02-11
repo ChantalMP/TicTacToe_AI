@@ -2,7 +2,7 @@ import random
 import gamemodel
 
 #structure in weights:
-#gamestate, move, weight
+#gamestate, move, playernr, weight
 
 class AI:
 
@@ -29,7 +29,7 @@ class AI:
     def save_weights(self):
         weightfile = open("weights.txt", "w")
         for w in self.weights:
-            info = str(w[0]) +" "+ str(w[1]) +" "+ str(w[2])+"\n"
+            info = str(w[0]) +" "+ str(w[1]) +" "+ str(w[2])+" "+ str(w[3]) +"\n"
             weightfile.write(info)
 
 
@@ -37,33 +37,33 @@ class AI:
         for i in (0,1):
             if madeMoves[i] != []:
                 if winner == i:
-                    self.evaluateWin(madeMoves[i])
+                    self.evaluate(madeMoves[i], 'w', i)
                 elif winner == 1-i:
-                    self.evaluateLoose(madeMoves[i])
+                    self.evaluate(madeMoves[i], 'l', i)
                 else:
-                    # evaluateTie ?
                     pass
 
-    def evaluateWin(self, made_moves):
+    def evaluate(self, made_moves, result, player):
+        print("eval: ",result)
         #move: (game.field, (row,column))
-        print("eval win")
         movecount = len(made_moves)
         for move in range(0, movecount):
             fieldstr = self.field_to_text(made_moves[move][0])
             movestr = str(made_moves[move][1][0])+str(made_moves[move][1][1])
+            playerstr = str(player)
 
             found = False
             for field in self.weights:
-                if field[0] == fieldstr and field[1] == movestr:
-                    w = float(field[2])+((move+1)/movecount)
-                    field[2] = w
+                if field[0] == fieldstr and field[1] == movestr and field[2] == playerstr:
+                    amount = ((move+1)/movecount)**2
+                    w = float(field[3])+amount if result == 'w' else float(field[3])-amount
+                    field[3] = w
                     found = True
             if(not found):
-                w = (move+1)/movecount
-                self.weights.append([fieldstr,movestr,w])
-
-    def evaluateLoose(self, made_moves):
-        print("eval loose")
+                print("not found")
+                amount = ((move+1)/movecount)**2
+                w = amount if result == 'w' else (-amount)
+                self.weights.append([fieldstr,movestr,player,w])
 
     def get_best_move(self, current_field):
         valid_moves = self.get_valid_moves(self.game)
