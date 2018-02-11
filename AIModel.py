@@ -1,3 +1,4 @@
+import random
 import gamemodel
 
 #structure in weights:
@@ -28,8 +29,7 @@ class AI:
     def save_weights(self):
         weightfile = open("weights.txt", "w")
         for w in self.weights:
-            print("writing...")
-            info = str(w[0]) +" "+ str(w[1]) +" "+ str(w[2])
+            info = str(w[0]) +" "+ str(w[1]) +" "+ str(w[2])+"\n"
             weightfile.write(info)
 
 
@@ -44,13 +44,26 @@ class AI:
                     # evaluateTie ?
                     pass
 
-
     def evaluateWin(self, made_moves):
+        #move: (game.field, (row,column))
         print("eval win")
+        movecount = len(made_moves)
+        for move in range(0, movecount):
+            fieldstr = self.field_to_text(made_moves[move][0])
+            movestr = str(made_moves[move][1][0])+str(made_moves[move][1][1])
+
+            found = False
+            for field in self.weights:
+                if field[0] == fieldstr and field[1] == movestr:
+                    w = float(field[2])+((move+1)/movecount)
+                    field[2] = w
+                    found = True
+            if(not found):
+                w = (move+1)/movecount
+                self.weights.append([fieldstr,movestr,w])
 
     def evaluateLoose(self, made_moves):
         print("eval loose")
-
 
     def get_best_move(self, current_field):
         valid_moves = self.get_valid_moves(self.game)
@@ -62,7 +75,7 @@ class AI:
             if node[0] == current_field:
                 relevantNodes.append(node)
 
-        best_move = valid_moves[0]
+        best_move = valid_moves[random.randrange(len(valid_moves))]
         best_move_value = -1
         for move in valid_moves:
             move_str = str(move[0])+str(move[1])

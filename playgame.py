@@ -72,6 +72,7 @@ def startgame(mode):
         print("The winner is player ",winner)
     if(mode == 0 or mode ==1):
         ai.evaluateGame(made_ai_moves, winner)
+    ai.save_weights()
 
 
 #main loop
