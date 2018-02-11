@@ -60,7 +60,6 @@ class AI:
                     field[3] = w
                     found = True
             if(not found):
-                print("not found")
                 amount = ((move+1)/movecount)**2
                 w = amount if result == 'w' else (-amount)
                 self.weights.append([fieldstr,movestr,player,w])
