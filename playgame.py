@@ -6,8 +6,9 @@ def print_field(field):
     for row in field:
         print (str(row) + "\n")
 
-def ai_move(game, player):
-    row, column = AIModel.get_best_move(game.field)
+def ai_move(game, player, ai):
+    print("AI move")
+    row, column = ai.get_best_move(game.field)
     game.field[int(row)][int(column)] = player
     print_field(game.field)
 
@@ -17,7 +18,7 @@ def ai_move(game, player):
 def user_move(game, player):
     valid = False
     while(not valid):
-        print("row between 0 and 2: ")
+        print("player ", player, ": row between 0 and 2: ")
         row = input()
         print("column between 0 and 2: ")
         column = input()
@@ -26,22 +27,23 @@ def user_move(game, player):
             print_field(game.field)
             valid = True
         else:
-            print("No valid move. please choose again.")
+            print("player ", player, ": No valid move. please choose again.")
 
 
 #game modes - ai vs ai for training, user vs ai for playing
-def ai_vs_ai(game):
+def ai_vs_ai(game, ai):
     while(gamemodel.getWinner(game) == -1):
-        ai_move(game, game.player)
+        ai_move(game, game.player, ai)
         game.player = 1 - game.player
     return gamemodel.getWinner(game)
 
-def ai_vs_user(game, starter):
+def ai_vs_user(game, starter, ai):
+    if starter == 1:
+        game.player = 1;
     while (gamemodel.getWinner(game) == -1):
-        if starter == 1:
-            game.player = 1;
-        ai_move(game, game.player) if game.player == 0 else user_move(game, game.player)
+        ai_move(game, game.player, ai) if game.player == 0 else user_move(game, game.player)
         game.player = 1 - game.player
+
     return gamemodel.getWinner(game)
 
 def user_vs_user(game):#for testing
@@ -55,19 +57,24 @@ def startgame(mode):
     game = gamemodel.game()
     starter = 0 #0-> ai, 1 ->human
 
+    ai = AIModel.AI(game)
+
     if mode == 0:
-        winner = ai_vs_ai(game)
+        winner = ai_vs_ai(game, ai)
     elif mode == 1:
-        winner = ai_vs_user(game,starter)
+        winner = ai_vs_user(game,starter, ai)
     else:
         winner = user_vs_user(game)
 
-    print("The winner is player ",winner)
+    if winner == 2:
+        print ("That was a tie")
+    else:
+        print("The winner is player ",winner)
     if(mode == 0 or mode ==1):
-        AIModel.evaluateGame(made_ai_moves, winner)
+        ai.evaluateGame(made_ai_moves, winner)
 
 
 #main loop
-playmode = 2
+playmode = 0
 startgame(playmode)
 
