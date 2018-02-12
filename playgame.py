@@ -15,14 +15,14 @@ def field_to_text(field):
      return text
 
 def ai_move(game, player, ai):
-    #print("AI move")
+    print("AI move")
     row, column = ai.get_best_move(field_to_text(game.field))
     # save made moves
     tmp = field_to_text(game.field)
     made_ai_moves[player].append((tmp, (row, column)))
 
     game.field[int(row)][int(column)] = player
-    #print_field(game.field)
+    print_field(game.field)
 
 def user_move(game, player):
     valid = False
@@ -85,7 +85,5 @@ def startgame(mode):
 
 
 #main loop
-playmode = 0
-for i in range(0,100):
-    print("Game ",i)
-    startgame(playmode)
+playmode = 1
+startgame(playmode)

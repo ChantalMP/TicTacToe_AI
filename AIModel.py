@@ -90,3 +90,8 @@ class AI:
                 if gamemodel.move_is_valid((row, column), game):
                     valid_moves.append((row, column))
         return valid_moves
+
+#TODO: always ties against herself, but against human really bad
+#more criteria?
+#evaluation witout given field neccessary?
+#probably learn by playing against human
