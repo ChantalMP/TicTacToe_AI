@@ -44,11 +44,10 @@ class AI:
                     pass
 
     def evaluate(self, made_moves, result, player):
-        print("eval: ",result)
         #move: (game.field, (row,column))
         movecount = len(made_moves)
         for move in range(0, movecount):
-            fieldstr = self.field_to_text(made_moves[move][0])
+            fieldstr = made_moves[move][0]
             movestr = str(made_moves[move][1][0])+str(made_moves[move][1][1])
             playerstr = str(player)
 
@@ -68,20 +67,20 @@ class AI:
         valid_moves = self.get_valid_moves(self.game)
         if len(valid_moves) == 1:#dont search if only one move left
             return valid_moves[0]
-        current_field = self.field_to_text(current_field)
         relevantNodes = []
         for node in self.weights:
             if node[0] == current_field:
                 relevantNodes.append(node)
 
         best_move = valid_moves[random.randrange(len(valid_moves))]
-        best_move_value = -1
+        best_move_value = -2
         for move in valid_moves:
             move_str = str(move[0])+str(move[1])
             for node in relevantNodes:
                 if move_str == node[1]:
-                    if int(node[2]) > best_move_value:
+                    if float(node[3]) > best_move_value:
                         best_move = move
+                        best_move_value = float(node[3])
         return best_move
 
     def get_valid_moves(self, game):
@@ -91,11 +90,3 @@ class AI:
                 if gamemodel.move_is_valid((row, column), game):
                     valid_moves.append((row, column))
         return valid_moves
-
-    def field_to_text(self, field):
-         text = ""
-         for row in field:
-             for i in row:
-                 add = '2' if i == -1 else str(i)
-                 text += add
-         return text

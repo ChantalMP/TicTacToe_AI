@@ -1,4 +1,4 @@
-import gamemodel, AIModel
+import gamemodel, AIModel, copy
 
 made_ai_moves = [[],[]]
 
@@ -6,14 +6,23 @@ def print_field(field):
     for row in field:
         print (str(row) + "\n")
 
-def ai_move(game, player, ai):
-    print("AI move")
-    row, column = ai.get_best_move(game.field)
-    game.field[int(row)][int(column)] = player
-    print_field(game.field)
+def field_to_text(field):
+     text = ""
+     for row in field:
+         for i in row:
+             add = '2' if i == -1 else str(i)
+             text += add
+     return text
 
-    #save made moves
-    made_ai_moves[player].append((game.field, (row,column)))
+def ai_move(game, player, ai):
+    #print("AI move")
+    row, column = ai.get_best_move(field_to_text(game.field))
+    # save made moves
+    tmp = field_to_text(game.field)
+    made_ai_moves[player].append((tmp, (row, column)))
+
+    game.field[int(row)][int(column)] = player
+    #print_field(game.field)
 
 def user_move(game, player):
     valid = False
@@ -76,6 +85,7 @@ def startgame(mode):
 
 
 #main loop
-playmode = 1
-for i in range(0,1):
+playmode = 0
+for i in range(0,100):
+    print("Game ",i)
     startgame(playmode)
