@@ -1,4 +1,4 @@
-import gamemodel, AIModel, copy
+import gamemodel, AIModelWholeField, copy
 
 made_ai_moves = [[],[]]
 
@@ -66,7 +66,7 @@ def startgame(mode):
     game = gamemodel.game()
     starter = 0 #0-> ai, 1 ->human
 
-    ai = AIModel.AI(game)
+    ai = AIModelWholeField.AI(game)
 
     if mode == 0:
         winner = ai_vs_ai(game, ai)

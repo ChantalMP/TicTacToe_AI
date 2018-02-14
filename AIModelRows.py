@@ -1,47 +1,13 @@
 import random
-import gamemodel
+import readAndWriteFile
 
 #structure in weights:
-#gamestate, move, playernr, weight
+#row/column/diagonal 3-tupel, field(0/1/2), playernr, weight
 
-class AI:
+class AI(readAndWriteFile.Parent_AI):
 
     def __init__(self, game):
-        self.weights = []
-        self.read_weights()
-        self.game = game
-
-    def read_weights(self):
-        try:
-            weightfile = open("weights.txt", "r")
-        except FileNotFoundError:
-            weightfile = open("weights.txt", "w")
-
-        if weightfile.mode == 'r':
-            self.weights = []
-            fl = weightfile.readlines()
-            for line in fl:
-                words = []
-                for word in line.split():
-                    words.append(word)
-                self.weights.append(words)
-
-    def save_weights(self):
-        weightfile = open("weights.txt", "w")
-        for w in self.weights:
-            info = str(w[0]) +" "+ str(w[1]) +" "+ str(w[2])+" "+ str(w[3]) +"\n"
-            weightfile.write(info)
-
-
-    def evaluateGame(self, madeMoves, winner):
-        for i in (0,1):
-            if madeMoves[i] != []:
-                if winner == i:
-                    self.evaluate(madeMoves[i], 'w', i)
-                elif winner == 1-i:
-                    self.evaluate(madeMoves[i], 'l', i)
-                else:
-                    self.evaluate(madeMoves[i], 't', i)
+        readAndWriteFile.Parent_AI.__init__(self, game)
 
     def evaluate(self, made_moves, result, player):
         #move: (game.field, (row,column))
@@ -83,16 +49,3 @@ class AI:
                         best_move = move
                         best_move_value = float(node[3])
         return best_move
-
-    def get_valid_moves(self, game):
-        valid_moves = []
-        for row in range(0, 3):
-            for column in range(0, 3):
-                if gamemodel.move_is_valid((row, column), game):
-                    valid_moves.append((row, column))
-        return valid_moves
-
-#TODO: always ties against herself, but against human really bad
-#more criteria?
-#evaluation witout given field neccessary?
-#probably learn by playing against human
