@@ -86,4 +86,6 @@ def startgame(mode):
 
 #main loop
 playmode = 1
+#for i in range(0,500):
+ #   print(i)
 startgame(playmode)

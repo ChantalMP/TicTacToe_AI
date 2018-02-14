@@ -41,7 +41,7 @@ class AI:
                 elif winner == 1-i:
                     self.evaluate(madeMoves[i], 'l', i)
                 else:
-                    pass
+                    self.evaluate(madeMoves[i], 't', i)
 
     def evaluate(self, made_moves, result, player):
         #move: (game.field, (row,column))
@@ -56,6 +56,7 @@ class AI:
                 if field[0] == fieldstr and field[1] == movestr and field[2] == playerstr:
                     amount = ((move+1)/movecount)**2
                     w = float(field[3])+amount if result == 'w' else float(field[3])-amount
+                    w = float(field[3])-(amount/2) if result == 't' else w #tie not that bad as loose
                     field[3] = w
                     found = True
             if(not found):
