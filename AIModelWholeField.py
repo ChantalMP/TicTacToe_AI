@@ -1,13 +1,13 @@
 import random
-import readAndWriteFile
+import parentAI
 
 #structure in weights:
 #gamestate, move, playernr, weight
 
-class AI(readAndWriteFile.Parent_AI):
+class AI(parentAI.Parent_AI):
 
     def __init__(self, game):
-        readAndWriteFile.Parent_AI.__init__(self, game)
+        parentAI.Parent_AI.__init__(self, game)
 
     def evaluate(self, made_moves, result, player):
         #move: (game.field, (row,column))
