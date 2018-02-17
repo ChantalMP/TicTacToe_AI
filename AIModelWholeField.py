@@ -39,8 +39,8 @@ class AI(parentAI.Parent_AI):
             if node[0] == current_field:
                 relevantNodes.append(node)
 
-        best_move = valid_moves[random.randrange(len(valid_moves))]
-        best_move_value = -2
+        best_move = valid_moves[random.randrange(0, len(valid_moves))]
+        best_move_value = -1000000
         for move in valid_moves:
             move_str = str(move[0])+str(move[1])
             for node in relevantNodes:
@@ -49,6 +49,7 @@ class AI(parentAI.Parent_AI):
                         best_move = move
                         best_move_value = float(node[3])
         return best_move
+
 
 #TODO: always ties against herself, but against human really bad
 #more criteria?

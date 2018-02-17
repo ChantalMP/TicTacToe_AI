@@ -1,4 +1,4 @@
-import gamemodel
+import gamemodel, math, random
 
 class Parent_AI:
 
@@ -6,6 +6,12 @@ class Parent_AI:
         self.weights = []
         self.read_weights()
         self.game = game
+
+    def sigmoid(self, x):
+        return 1 / (1 + math.exp(-x))
+
+    def rev_sigmoid(self,y):
+        return math.log((1/y)-1)
 
     def read_weights(self):
         try:
@@ -45,3 +51,9 @@ class Parent_AI:
                 if gamemodel.move_is_valid((row, column), game):
                     valid_moves.append((row, column))
         return valid_moves
+
+    def randomMove (self, field):
+        valid_moves = self.get_valid_moves(self.game)
+        best_move = valid_moves[random.randrange(0, len(valid_moves))]
+
+        return best_move

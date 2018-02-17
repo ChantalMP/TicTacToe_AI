@@ -36,16 +36,16 @@ def getWinner(game):
         return 2
     return ret
 
-#valid moves
-def move_is_valid(move, game):
-    #field: e.g (0,0), (0,1), ...
-    field = game.field
-    ret = True if field[move[0]][move[1]] == -1 else False
-    return ret
-
 def moves_left(game):
     for row in range(0,3):
         for column in range(0,3):
             if move_is_valid((row,column), game):
                 return True
     return False;
+
+#valid moves
+def move_is_valid(move, game):
+    #field: e.g (0,0), (0,1), ...
+    field = game.field
+    ret = True if field[move[0]][move[1]] == -1 else False
+    return ret

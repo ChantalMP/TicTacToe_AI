@@ -2,6 +2,10 @@ import gamemodel, AIModelWholeField, AIModelRows
 
 made_ai_moves = [[],[]]
 
+ties = 0
+a = 0
+r = 0
+
 def print_field(field):
     for row in field:
         print (str(row) + "\n")
@@ -14,39 +18,15 @@ def field_to_text(field):
              text += add
      return text
 
-
-def getRows(field, row, column):
-    tmp = field_to_text(field)
-    chosen_row = tmp[(row * 3)::((row * 3) + 3)]
-    chosen_column = str(field[0][column]) + str(field[1][column]) + str(field[2][column])
-    chosen_diag1 = ""
-    chosen_diag2 = ""
-    if row == column == 1:
-        chosen_diag1 = tmp[0] + tmp[4] + tmp[9]
-        chosen_diag2 = tmp[2] + tmp[4] + tmp[7]
-    elif row != 1 and column != 1:
-        if row == column:
-            chosen_diag1 = tmp[0] + tmp[4] + tmp[9]
-        else:
-            chosen_diag2 = tmp[2] + tmp[4] + tmp[7]
-
-    return chosen_row, chosen_column, chosen_diag1, chosen_diag2
-
-
 def ai_move(game, player, ai):
-    print("AI move")
+    #print("AI move")
     row, column = ai.get_best_move(field_to_text(game.field))
-    # save made moves for fieldAI
-    # tmp = field_to_text(game.field)
-
-    #save made moves for rowsAI
-    chosen_row, chosen_column, chosen_diag1, chosen_diag2 = getRows(game.field, row, column)
-    tmp = (chosen_row, chosen_column, chosen_diag1, chosen_diag2)
-
+    #save made moves for fieldAI
+    tmp = field_to_text(game.field)
     made_ai_moves[player].append((tmp, (row, column)))
 
     game.field[int(row)][int(column)] = player
-    print_field(game.field)
+    #print_field(game.field)
 
 def user_move(game, player):
     valid = False
@@ -62,11 +42,27 @@ def user_move(game, player):
         else:
             print("player ", player, ": No valid move. please choose again.")
 
+def random_move(game, player, ai):
+    #print("random")
+    row, column = ai.randomMove(game.field)
+    game.field[int(row)][int(column)] = player
+    #print_field(game.field)
+
+def ai_vs_ai(game, ai):
+    while (gamemodel.getWinner(game) == -1):
+        ai_move(game, game.player, ai)
+        game.player = 1 - game.player
+    return gamemodel.getWinner(game)
+
 
 #game modes - ai vs ai for training, user vs ai for playing
-def ai_vs_ai(game, ai):
+def rand_vs_ai(game, starter, ai):
+    if starter == 1:
+        game.player = 1;
+    else:
+        game.player = 0
     while(gamemodel.getWinner(game) == -1):
-        ai_move(game, game.player, ai)
+        ai_move(game, game.player, ai) if game.player == 0 else random_move(game, game.player, ai)
         game.player = 1 - game.player
     return gamemodel.getWinner(game)
 
@@ -85,10 +81,10 @@ def user_vs_user(game):#for testing
         game.player = 1 - game.player
     return gamemodel.getWinner(game)
 
-
-def startgame(mode):
+def startgame(mode, starter):
+    global r, a, ties
     game = gamemodel.game()
-    starter = 0 #0-> ai, 1 ->human
+    #starter = 0-> ai, 1 ->human
 
     #ai = AIModelWholeField.AI(game)
     ai = AIModelRows.AI(game)
@@ -98,20 +94,37 @@ def startgame(mode):
         winner = ai_vs_ai(game, ai)
     elif mode == 1:
         winner = ai_vs_user(game,starter, ai)
+    elif mode == 2:
+        winner = rand_vs_ai(game, starter, ai)
     else:
         winner = user_vs_user(game)
 
     if winner == 2:
-        print ("That was a tie")
+        #print ("That was a tie")
+        ties += 1
+
     else:
-        print("The winner is player ",winner)
-    if(mode == 0 or mode ==1):
+        #print("The winner is player ", winner)
+        if winner == 0:
+            a += 1
+        else:
+            r +=1
+
+    if(mode == 0 or mode ==1 or mode == 2):
         ai.evaluateGame(made_ai_moves, winner)
         ai.save_weights()
 
-
 #main loop
-playmode = 1
-#for i in range(0,500):
- #   print(i)
-startgame(playmode)
+starter = 0
+for i in range(0,10):
+    print(i,": random")
+    for i in range(0,100):
+        startgame(2, starter)
+        starter = 1 - starter
+    print("Ties: ", ties, "   random: ", r, "   Ai: ", a)
+
+    print("AI")
+    for i in range(0, 100):
+        startgame(0, starter)
+        starter = 1 - starter
+    print("Ties: ", ties, "   Ai1: ", a, "   Ai2: ", r)
