@@ -63,17 +63,17 @@ class AI(p.Parent_AI):
             moves = [rowMove, columnMove, diag1Move, diag2Move]
 
             if result == 'w':
-                amount = ((move + 1) / movecount) ** 10
+                amount = ((move + 1) / movecount) ** 2
             elif result == 'l':
-                amount = -(((move + 1) / movecount) ** 10)/2
+                amount = -(((move + 1) / movecount) ** 2)/2
             else:
-                amount = -(((move + 1) / movecount) ** 10)/4
+                amount = -(((move + 1) / movecount) ** 2)/4
 
             #relevance of tuples:
             empty = {}
             for t in tuples:
                 if t != '':
-                    if t[0] == t[1] != '2' or t[0] == t[2] == '2' or t[1] == t[2] == '2':
+                    if t[0] == t[1] != '2' or t[0] == t[2] != '2' or t[1] == t[2] != '2':
                         empty.update({t:2.0})
                     else:
                         empty.update({t:1.0})
@@ -85,13 +85,13 @@ class AI(p.Parent_AI):
                             #old_weight = p.Parent_AI.rev_sigmoid(self, float(entry[3]))
                             #new_weight = p.Parent_AI.sigmoid(self, old_weight + amount)
                             old_weight = float(entry[3])
-                            new_weight = old_weight + amount*(math.pow(empty[tuples[t]],4))
+                            new_weight = old_weight + amount*(math.pow(empty[tuples[t]],6))
                             entry[3] = new_weight
                         if entry[0] == tuples[t] and entry[1] == str(1-player) and entry[2] == str(moves[t]):
                             #old_weight = p.Parent_AI.rev_sigmoid(self, float(entry[3]))
                             #new_weight = p.Parent_AI.sigmoid(self, old_weight + amount)
                             old_weight = float(entry[3])
-                            new_weight = old_weight + amount*(math.pow(empty[tuples[t]],4))/2
+                            new_weight = old_weight + (amount*(math.pow(empty[tuples[t]],6))/2)
                             entry[3] = new_weight
 
     def get_best_move(self, current_field_str):

@@ -5,6 +5,7 @@ made_ai_moves = [[],[]]
 ties = 0
 a = 0
 r = 0
+p = False
 
 def print_field(field):
     for row in field:
@@ -26,7 +27,8 @@ def ai_move(game, player, ai):
     made_ai_moves[player].append((tmp, (row, column)))
 
     game.field[int(row)][int(column)] = player
-    #print_field(game.field)
+    if p:
+        print_field(game.field)
 
 def user_move(game, player):
     valid = False
@@ -35,6 +37,9 @@ def user_move(game, player):
         row = input()
         print("column between 0 and 2: ")
         column = input()
+        if row not in ('0', '1', '2') or column not in ('0','1','2'):
+            print("player ", player, ": No valid move. please choose again.")
+            continue
         if gamemodel.move_is_valid((int(row), int(column)), game):
             game.field[int(row)][int(column)] = player
             print_field(game.field)
@@ -82,7 +87,7 @@ def user_vs_user(game):#for testing
     return gamemodel.getWinner(game)
 
 def startgame(mode, starter):
-    global r, a, ties
+    global r, a, ties, p
     game = gamemodel.game()
     #starter = 0-> ai, 1 ->human
 
@@ -91,20 +96,26 @@ def startgame(mode, starter):
 
 
     if mode == 0:
+        p = False
         winner = ai_vs_ai(game, ai)
     elif mode == 1:
+        p = True
         winner = ai_vs_user(game,starter, ai)
     elif mode == 2:
+        p = False
         winner = rand_vs_ai(game, starter, ai)
     else:
+        p = True
         winner = user_vs_user(game)
 
     if winner == 2:
-        #print ("That was a tie")
+        if p:
+            print ("That was a tie")
         ties += 1
 
     else:
-        #print("The winner is player ", winner)
+        if p:
+            print("The winner is player ", winner)
         if winner == 0:
             a += 1
         else:
@@ -115,15 +126,19 @@ def startgame(mode, starter):
         ai.save_weights()
 
 #main loop
+#first training
+
 starter = 0
 for i in range(0,10):
     print(i,": random")
-    for i in range(0,100):
+    a = ties = r = 0
+    for i in range(0,1000):
         startgame(2, starter)
         starter = 1 - starter
     print("Ties: ", ties, "   random: ", r, "   Ai: ", a)
 
     print("AI")
+    a = ties = r = 0
     for i in range(0, 100):
         startgame(0, starter)
         starter = 1 - starter

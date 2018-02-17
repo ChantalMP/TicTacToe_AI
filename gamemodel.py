@@ -32,7 +32,7 @@ def diagonals(field):
 def getWinner(game):
     field = game.field
     ret = -1 if (lines(field) == -1 and columns(field) == -1 and diagonals(field) == -1) else max(lines(field),columns(field),diagonals(field))
-    if not moves_left(game):
+    if ret == -1 and not moves_left(game):
         return 2
     return ret
 
