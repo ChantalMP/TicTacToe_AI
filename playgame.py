@@ -129,17 +129,31 @@ def startgame(mode, starter):
 #first training
 
 starter = 0
-for i in range(0,10):
-    print(i,": random")
-    a = ties = r = 0
-    for i in range(0,1000):
-        startgame(2, starter)
-        starter = 1 - starter
-    print("Ties: ", ties, "   random: ", r, "   Ai: ", a)
+# for i in range(0,10):
+#     print("round: ",i)
+#     for i in range(0,700):
+#         if i%100 == 0:
+#             print(i)
+#         startgame(2, starter)
+#         starter = 1 - starter
+#
+#     for i in range(0, 300):
+#         startgame(0, starter)
+#         starter = 1 - starter
 
-    print("AI")
-    a = ties = r = 0
-    for i in range(0, 100):
-        startgame(0, starter)
-        starter = 1 - starter
-    print("Ties: ", ties, "   Ai1: ", a, "   Ai2: ", r)
+#test:
+# ties = a = r = 0
+# for i in range(0,100):
+#     startgame(2, starter)
+#     starter = 1 - starter
+# print("RANDOM: Ties: ", ties, "   AI: ", a, "   Random: ", r)
+#
+# ties = a = r = 0
+# for i in range(0,100):
+#     startgame(0, starter)
+#     starter = 1 - starter
+# print("RANDOM: Ties: ", ties, "   AI1: ", a, "   AI2: ", r)
+
+for i in range(0,4):
+    startgame(1,starter)
+    starter = 1- starter
