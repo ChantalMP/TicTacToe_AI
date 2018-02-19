@@ -33,6 +33,7 @@ class Parent_AI:
                 for word in line.split():
                     words.append(word)
                 self.weights.append(words)
+        weightfile.close()
 
     def save_weights(self):
         new = False
@@ -41,14 +42,16 @@ class Parent_AI:
             info = str(w[0]) +" "+ str(w[1]) +" "+ str(w[2])+" "+ str(w[3]) +"\n"
             if Decimal(w[3]) >= 2**20:
                 new = True
+                weightfile.close()
                 break
             weightfile.write(info)
         if new:
-            print("new")
+            weightfile = open("weights.txt", "w")
             for w in self.weights:
                 w[3] = Decimal(w[3])/2
                 info = str(w[0]) +" "+ str(w[1]) +" "+ str(w[2])+" "+ str(w[3]) +"\n"
                 weightfile.write(info)
+            weightfile.close()
 
     def evaluateGame(self, madeMoves, winner):
         for i in (0,1):
