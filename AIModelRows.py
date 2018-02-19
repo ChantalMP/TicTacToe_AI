@@ -1,9 +1,11 @@
-import random
+import random, math
 import parentAI as p
-import math
+from decimal import Decimal
+
 
 #structure in weights:
 #row/column/diagonal 3-tupel, field(0/1/2), playernr, weight
+
 
 
 class AI(p.Parent_AI):
@@ -63,11 +65,11 @@ class AI(p.Parent_AI):
             moves = [rowMove, columnMove, diag1Move, diag2Move]
 
             if result == 'w':
-                amount = ((move + 1) / movecount) ** 2
+                amount = Decimal(((move + 1) / movecount)**2)
             elif result == 'l':
-                amount = -(((move + 1) / movecount) ** 2)/2
+                amount = Decimal(-(((move + 1) / movecount)**2))
             else:
-                amount = -(((move + 1) / movecount) ** 2)/4
+                amount = Decimal(-(((move + 1) / movecount))/4)
 
             #relevance of tuples:
             empty = {}
@@ -82,16 +84,23 @@ class AI(p.Parent_AI):
                 if tuples[t] != '': #empty string if diagonal dont exists
                     for entry in self.weights:
                         if entry[0] == tuples[t] and entry[1] == str(player) and entry[2] == str(moves[t]):
-                            #old_weight = p.Parent_AI.rev_sigmoid(self, float(entry[3]))
-                            #new_weight = p.Parent_AI.sigmoid(self, old_weight + amount)
-                            old_weight = float(entry[3])
-                            new_weight = old_weight + amount*(math.pow(empty[tuples[t]],6))
-                            entry[3] = new_weight
+                            if (Decimal(entry[3]) == 0):
+                                print("e: ", entry)
+                            #old_weight = p.Parent_AI.rev_sigmoid(self, Decimal(entry[3]))
+                            #tmp = Decimal(old_weight + amount*(Decimal(math.pow(empty[tuples[t]],6))))
+                            #new_weight = p.Parent_AI.sigmoid(self, tmp)
+                            old_weight = Decimal(entry[3])
+                            new_weight = old_weight + amount*Decimal(math.pow(empty[tuples[t]],6))
+                            if new_weight != 0.0 and new_weight != 1.0:
+                                entry[3] = new_weight
                         if entry[0] == tuples[t] and entry[1] == str(1-player) and entry[2] == str(moves[t]):
-                            #old_weight = p.Parent_AI.rev_sigmoid(self, float(entry[3]))
-                            #new_weight = p.Parent_AI.sigmoid(self, old_weight + amount)
-                            old_weight = float(entry[3])
-                            new_weight = old_weight + (amount*(math.pow(empty[tuples[t]],6))/2)
+                            if(entry[3]==0.0 or entry[3] == 1.0):
+                                print("help: ", entry)
+                            #old_weight = p.Parent_AI.rev_sigmoid(self, Decimal(entry[3]))
+                            #tmp = Decimal(old_weight + amount*(Decimal(math.pow(empty[tuples[t]],6)))/2)
+                            #new_weight = p.Parent_AI.sigmoid(self, tmp)
+                            old_weight = Decimal(entry[3])
+                            new_weight = old_weight + amount*Decimal(( math.pow(empty[tuples[t]],6))/2)
                             entry[3] = new_weight
 
     def get_best_move(self, current_field_str):
@@ -133,9 +142,10 @@ class AI(p.Parent_AI):
                 count += 1
                 for w in self.weights:
                     if w[0] == tuples[i] and w[1] == str(self.game.player) and w[2] == str(moves[i]):
-                        val.append(float(w[3]))
+                        val.append(Decimal(w[3]))
                         #ret_val += float(w[3])
                         break
+
         max_val = max(val)
         ret_val = 0
         for v in val:

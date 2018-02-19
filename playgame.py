@@ -131,13 +131,11 @@ def startgame(mode, starter):
 starter = 0
 # for i in range(0,10):
 #     print("round: ",i)
-#     for i in range(0,700):
-#         if i%100 == 0:
-#             print(i)
+#     for i in range(0,50):
 #         startgame(2, starter)
 #         starter = 1 - starter
 #
-#     for i in range(0, 300):
+#     for i in range(0, 50):
 #         startgame(0, starter)
 #         starter = 1 - starter
 

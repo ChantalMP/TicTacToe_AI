@@ -1,4 +1,5 @@
 import gamemodel, math, random
+from decimal import Decimal
 
 class Parent_AI:
 
@@ -8,10 +9,15 @@ class Parent_AI:
         self.game = game
 
     def sigmoid(self, x):
-        return 1 / (1 + math.exp(-x))
+        x = Decimal(x)
+        return Decimal(1 / (1 + x.exp()))
 
     def rev_sigmoid(self,y):
-        return math.log((1/y)-1)
+        y = Decimal(y)
+        if (y == 0):
+            print(y)
+        inner = (1/y)-1
+        return Decimal(- Decimal(inner).ln())
 
     def read_weights(self):
         try:
@@ -29,10 +35,20 @@ class Parent_AI:
                 self.weights.append(words)
 
     def save_weights(self):
+        new = False
         weightfile = open("weights.txt", "w")
         for w in self.weights:
             info = str(w[0]) +" "+ str(w[1]) +" "+ str(w[2])+" "+ str(w[3]) +"\n"
+            if Decimal(w[3]) >= 2**20:
+                new = True
+                break
             weightfile.write(info)
+        if new:
+            print("new")
+            for w in self.weights:
+                w[3] = Decimal(w[3])/2
+                info = str(w[0]) +" "+ str(w[1]) +" "+ str(w[2])+" "+ str(w[3]) +"\n"
+                weightfile.write(info)
 
     def evaluateGame(self, madeMoves, winner):
         for i in (0,1):
